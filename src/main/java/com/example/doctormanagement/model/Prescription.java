@@ -1,15 +1,12 @@
 package com.example.doctormanagement.model;
 
-import com.example.doctormanagement.model.MedicalHistory;
-
-import java.util.Date;
+import java.sql.Date;
 
 public class Prescription extends MedicalHistory {
     private float dosageMg;
     private int dosageADay;
     private String medicine;
     Date date;
-
 
     public float getDosageMg() {
         return dosageMg;

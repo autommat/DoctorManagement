@@ -1,6 +1,6 @@
 package com.example.doctormanagement.model;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class Patient {
@@ -60,4 +60,13 @@ public class Patient {
         this.prescriptions = prescriptions;
     }
 
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthDate=" + birthDate +
+                '}';
+    }
 }

@@ -1,15 +1,12 @@
 package com.example.doctormanagement.model;
 
-import com.example.doctormanagement.model.MedicalHistory;
-
-import java.util.Date;
+import java.sql.Date;
 
 public class Treatment extends MedicalHistory {
     private String title;
     private Date startDate;
     private Date endDate;
     private String description;
-
 
     public String getTitle() {
         return title;
