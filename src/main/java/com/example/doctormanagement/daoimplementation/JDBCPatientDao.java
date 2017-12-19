@@ -96,10 +96,39 @@ public class JDBCPatientDao implements PatientDao {
     }
 
     public boolean addTreatment(int patientId, Treatment treatment) {
-        throw new NotImplementedException();
+        try {
+            PreparedStatement statement = connection.prepareStatement("insert into TREATMENTS " +
+                    "(patId, title, description, startDate, endDate) " +
+                    "values (?, ?, ?, ?, ?)");
+            statement.setInt(1, patientId);
+            statement.setString(2, treatment.getTitle());
+            statement.setString(3, treatment.getDescription());
+            statement.setDate(4, treatment.getStartDate());
+            statement.setDate(5, treatment.getEndDate());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     public boolean addPrescription(int patientId, Prescription prescription) {
-        throw new NotImplementedException();
+        try {
+            PreparedStatement statement = connection.prepareStatement("insert into PRESCRIPTIONS " +
+                    "(patId, medicine, dosageADay, dosageMg) " +
+                    "values (?, ?, ?, ?)");
+            statement.setInt(1, patientId);
+            statement.setString(2, prescription.getMedicine());
+            statement.setInt(3, prescription.getDosageADay());
+            statement.setFloat(4, prescription.getDosageMg());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
     }
 }

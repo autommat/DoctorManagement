@@ -50,6 +50,8 @@ public class Example {
         Class.forName(MYSQL_DRIVER);
         Connection connection = DriverManager.getConnection(MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
         Statement statement = connection.createStatement();
+        statement.execute("drop table if exists PRESCRIPTIONS");
+        statement.execute("drop table if exists TREATMENTS");
         statement.execute("drop table if exists PATIENTS");
         statement.execute("drop table if exists DOCTORS");
         statement.execute("create table DOCTORS (\n" +
@@ -68,7 +70,25 @@ public class Example {
                 "        primary key (id),\n" +
                 "        foreign key (docId) references DOCTORS(id)\n" +
                 "    )");
-
+        statement.execute("create table PRESCRIPTIONS (\n" +
+                "       id integer not null auto_increment,\n" +
+                "       patId integer ,\n" +
+                "        medicine varchar(255),\n" +
+                "        dosageMg real,\n" +
+                "        dosageADay integer,\n" +
+                "        primary key (id),\n" +
+                "        foreign key (patId) references PATIENTS(id)\n" +
+                "    )");
+        statement.execute("create table TREATMENTS (\n" +
+                "       id integer not null auto_increment,\n" +
+                "       patId integer ,\n" +
+                "        title varchar(255),\n" +
+                "        description varchar(255),\n" +
+                "        startDate date,\n" +
+                "        endDate date,\n" +
+                "        primary key (id),\n" +
+                "        foreign key (patId) references PATIENTS(id)\n" +
+                "    )");
         statement.close();
     }
 }
