@@ -3,12 +3,10 @@ package com.example.doctormanagement.daoimplementation;
 import com.example.doctormanagement.daointerface.DoctorDao;
 import com.example.doctormanagement.model.Doctor;
 import com.example.doctormanagement.model.Patient;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -80,9 +78,13 @@ public class JDBCDoctorDao implements DoctorDao {
             ps.setInt(1, id);
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
+                rs.next();
                 doctor.setName(rs.getString("name"));
                 doctor.setSpecialization(rs.getString("specialization"));
                 doctor.setSurname(rs.getString("surname"));
+                int doctorId = rs.getInt("id");
+                doctor.setId(doctorId);
+                doctor.setPatients(getPatientListByDoctorId(doctorId));
             }
         } catch (SQLException ex) {
             Logger.getLogger(JDBCDoctorDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,5 +113,39 @@ public class JDBCDoctorDao implements DoctorDao {
             Logger.getLogger(JDBCDoctorDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return doctor;
+    }
+
+    private List<Patient> getPatientListByDoctorId(int id){
+        List<Patient> toReturn = new ArrayList<Patient>();
+        try {
+            PreparedStatement statement = connection.prepareStatement("select" +
+                    " p.id," +
+                    " p.surname," +
+                    " p.name," +
+                    " p.birthDate " +
+                    " FROM PATIENTS p" +
+                    " WHERE" +
+                    " (p.docId = ?)");
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Patient p = new Patient();
+                Integer pid = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String surname = resultSet.getString("surname");
+                Date birthDate = resultSet.getDate("birthDate");
+                p.setId(pid);
+                p.setName(name);
+                p.setSurname(surname);
+                p.setBirthDate(birthDate);
+                toReturn.add(p);
+            }
+            statement.close();
+            resultSet.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return toReturn;
     }
 }

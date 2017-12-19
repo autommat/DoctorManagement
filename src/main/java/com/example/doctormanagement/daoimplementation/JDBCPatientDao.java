@@ -61,11 +61,41 @@ public class JDBCPatientDao implements PatientDao {
         return toReturn;
     }
 
-    public boolean addTreatment(int patientId, Treatment treatment) {
-        throw new NotImplementedException();
+    public Patient getPatientByNameSurname(String name, String surname) {
+        Patient toReturn = null;
+        try {
+            PreparedStatement statement = connection.prepareStatement("select" +
+                    " p.id," +
+                    " p.surname," +
+                    " p.name," +
+                    " p.birthDate " +
+                    " FROM PATIENTS p" +
+                    " WHERE" +
+                    " (p.name = ? AND p.surname=?)");
+            statement.setString(1, name);
+            statement.setString(2, surname);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                toReturn = new Patient();
+                Integer pid = resultSet.getInt("id");
+                String pname = resultSet.getString("name");
+                String psurname = resultSet.getString("surname");
+                Date birthDate = resultSet.getDate("birthDate");
+                toReturn.setId(pid);
+                toReturn.setName(name);
+                toReturn.setSurname(surname);
+                toReturn.setBirthDate(birthDate);
+            }
+            statement.close();
+            resultSet.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return toReturn;
     }
 
-    public Patient getPatientByNameSurname(String name, String surname) {
+    public boolean addTreatment(int patientId, Treatment treatment) {
         throw new NotImplementedException();
     }
 

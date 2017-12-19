@@ -32,17 +32,18 @@ public class Example {
 
         Doctor doctorFromDB = doctorDao.getDoctorByNameSurname("Anna", "Nowak");
         System.out.println(doctorFromDB);
+        Doctor doctorFromDB2 = doctorDao.getDoctorById(doctorFromDB.getId());
+        System.out.println(doctorFromDB2);
 
         Patient patientToAdd = new Patient();
         patientToAdd.setName("Jan");
         patientToAdd.setSurname("Kowalski");
         patientToAdd.setBirthDate(new Date(new java.util.Date().getTime()));
-        if (!doctorDao.addPatient(doctorFromDB.getId(), patientToAdd)) {
-            throw new SQLException();
-        }
-        ;
+        doctorDao.addPatient(doctorFromDB.getId(), patientToAdd);
         Patient patientFromDB = patientDao.getPatientById(1);
         System.out.println(patientFromDB);
+        Patient patientFromDB2 = patientDao.getPatientByNameSurname("Jan", "Kowalski");
+        System.out.println(patientFromDB2);
     }
 
     private static void dropAndCreateDatabase() throws ClassNotFoundException, SQLException {
