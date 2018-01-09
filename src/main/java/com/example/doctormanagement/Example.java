@@ -16,12 +16,24 @@ public class Example {
     private static final String MYSQL_DATABASE_USERNAME = "root";
     private static final String MYSQL_DATABASE_PASSWORD = "root";
 
+    private static final String MICROSOFT_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    private static final String MICROSOFT_DATABASE_URL = "jdbc:sqlserver://miisu.database.windows.net:1433/HIS";
+    private static final String MICROSOFT_DATABASE_USERNAME = "ServerAdmin@miisu";
+    private static final String MICROSOFT_DATABASE_PASSWORD = "Ristolainen555";
+    private static final String MICROSOFT_CONNECTION_URL = "jdbc:sqlserver://miisu.database.windows.net:1433" + ";" +
+            "database=HIS" + ";" +
+            "user=ServerAdmin@miisu" + ";" +
+            "password=Ristolainen555";
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         if (USE_DROP_AND_CREATE) {
             dropAndCreateDatabase();
         }
-        DoctorDao doctorDao = new JDBCDoctorDao(MYSQL_DRIVER, MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
-        PatientDao patientDao = new JDBCPatientDao(MYSQL_DRIVER, MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
+//        DoctorDao doctorDao = new JDBCDoctorDao(MYSQL_DRIVER, MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
+//        PatientDao patientDao = new JDBCPatientDao(MYSQL_DRIVER, MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
+
+        DoctorDao doctorDao = new JDBCDoctorDao(MICROSOFT_DRIVER, MICROSOFT_CONNECTION_URL);
+        PatientDao patientDao = new JDBCPatientDao(MICROSOFT_DRIVER, MICROSOFT_CONNECTION_URL);
 
         Doctor doctorToAdd = new Doctor();
         doctorToAdd.setName("Anna");
@@ -48,46 +60,46 @@ public class Example {
 
     private static void dropAndCreateDatabase() throws ClassNotFoundException, SQLException {
         Class.forName(MYSQL_DRIVER);
-        Connection connection = DriverManager.getConnection(MYSQL_DATABASE_URL, MYSQL_DATABASE_USERNAME, MYSQL_DATABASE_PASSWORD);
+        Connection connection = DriverManager.getConnection(MICROSOFT_CONNECTION_URL);
         Statement statement = connection.createStatement();
-        statement.execute("drop table if exists PRESCRIPTIONS");
-        statement.execute("drop table if exists TREATMENTS");
-        statement.execute("drop table if exists PATIENTS");
-        statement.execute("drop table if exists DOCTORS");
-        statement.execute("create table DOCTORS (\n" +
-                "       id integer not null auto_increment,\n" +
+        statement.execute("drop table if exists DPRESCRIPTIONS");
+        statement.execute("drop table if exists DTREATMENTS");
+        statement.execute("drop table if exists DPATIENTS");
+        statement.execute("drop table if exists DDOCTORS");
+        statement.execute("create table DDOCTORS (\n" +
+                "       id integer not null IDENTITY(1,1),\n" +
                 "        name varchar(255),\n" +
                 "        specialization varchar(255),\n" +
                 "        surname varchar(255),\n" +
                 "        primary key (id)\n" +
                 "    )");
-        statement.execute("create table PATIENTS (\n" +
-                "       id integer not null auto_increment,\n" +
+        statement.execute("create table DPATIENTS (\n" +
+                "       id integer not null IDENTITY(1,1),\n" +
                 "       docId integer ,\n" +
                 "        name varchar(255),\n" +
                 "        birthDate date,\n" +
                 "        surname varchar(255),\n" +
                 "        primary key (id),\n" +
-                "        foreign key (docId) references DOCTORS(id)\n" +
+                "        foreign key (docId) references DDOCTORS(id)\n" +
                 "    )");
-        statement.execute("create table PRESCRIPTIONS (\n" +
-                "       id integer not null auto_increment,\n" +
+        statement.execute("create table DPRESCRIPTIONS (\n" +
+                "       id integer not null IDENTITY(1,1),\n" +
                 "       patId integer ,\n" +
                 "        medicine varchar(255),\n" +
                 "        dosageMg real,\n" +
                 "        dosageADay integer,\n" +
                 "        primary key (id),\n" +
-                "        foreign key (patId) references PATIENTS(id)\n" +
+                "        foreign key (patId) references DPATIENTS(id)\n" +
                 "    )");
-        statement.execute("create table TREATMENTS (\n" +
-                "       id integer not null auto_increment,\n" +
+        statement.execute("create table DTREATMENTS (\n" +
+                "       id integer not null IDENTITY(1,1),\n" +
                 "       patId integer ,\n" +
                 "        title varchar(255),\n" +
                 "        description varchar(255),\n" +
                 "        startDate date,\n" +
                 "        endDate date,\n" +
                 "        primary key (id),\n" +
-                "        foreign key (patId) references PATIENTS(id)\n" +
+                "        foreign key (patId) references DPATIENTS(id)\n" +
                 "    )");
         statement.close();
     }

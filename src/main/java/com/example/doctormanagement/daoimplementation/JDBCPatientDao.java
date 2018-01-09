@@ -28,6 +28,19 @@ public class JDBCPatientDao implements PatientDao {
         }
     }
 
+    public JDBCPatientDao(String driverName, String connectionUrl) throws ClassNotFoundException, SQLException {
+        try {
+            Class.forName(driverName);
+            connection = DriverManager.getConnection(connectionUrl);
+        } catch (ClassNotFoundException e) {
+            System.out.println("problems with JDBC connector");
+            throw e;
+        } catch (SQLException e) {
+            System.out.println("no connection to database");
+            throw e;
+        }
+    }
+
     public Patient getPatientById(int id) {
         Patient toReturn = null;
         try {
@@ -36,7 +49,7 @@ public class JDBCPatientDao implements PatientDao {
                     " p.surname," +
                     " p.name," +
                     " p.birthDate " +
-                    " FROM PATIENTS p" +
+                    " FROM DPATIENTS p" +
                     " WHERE" +
                     " (p.id = ?)");
             statement.setInt(1, id);
@@ -69,7 +82,7 @@ public class JDBCPatientDao implements PatientDao {
                     " p.surname," +
                     " p.name," +
                     " p.birthDate " +
-                    " FROM PATIENTS p" +
+                    " FROM DPATIENTS p" +
                     " WHERE" +
                     " (p.name = ? AND p.surname=?)");
             statement.setString(1, name);
@@ -97,7 +110,7 @@ public class JDBCPatientDao implements PatientDao {
 
     public boolean addTreatment(int patientId, Treatment treatment) {
         try {
-            PreparedStatement statement = connection.prepareStatement("insert into TREATMENTS " +
+            PreparedStatement statement = connection.prepareStatement("insert into DTREATMENTS " +
                     "(patId, title, description, startDate, endDate) " +
                     "values (?, ?, ?, ?, ?)");
             statement.setInt(1, patientId);
@@ -116,7 +129,7 @@ public class JDBCPatientDao implements PatientDao {
 
     public boolean addPrescription(int patientId, Prescription prescription) {
         try {
-            PreparedStatement statement = connection.prepareStatement("insert into PRESCRIPTIONS " +
+            PreparedStatement statement = connection.prepareStatement("insert into DPRESCRIPTIONS " +
                     "(patId, medicine, dosageADay, dosageMg) " +
                     "values (?, ?, ?, ?)");
             statement.setInt(1, patientId);

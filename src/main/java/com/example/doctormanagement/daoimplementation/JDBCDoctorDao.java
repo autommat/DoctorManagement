@@ -36,9 +36,22 @@ public class JDBCDoctorDao implements DoctorDao {
         }
     }
 
+    public JDBCDoctorDao(String driverName,String connectionUrl) throws ClassNotFoundException, SQLException {
+        try {
+            Class.forName(driverName);
+            connection = DriverManager.getConnection(connectionUrl);
+        } catch (ClassNotFoundException e) {
+            System.out.println("problems with JDBC connector");
+            throw e;
+        } catch (SQLException e) {
+            System.out.println("no connection to database");
+            throw e;
+        }
+    }
+
     public boolean addDoctor(Doctor doctor) {
         try {
-            PreparedStatement statement = connection.prepareStatement("insert into DOCTORS " +
+            PreparedStatement statement = connection.prepareStatement("insert into DDOCTORS " +
                     "(specialization, name, surname) " +
                     "values (?, ?, ?)");
             statement.setString(1, doctor.getSpecialization());
@@ -55,7 +68,7 @@ public class JDBCDoctorDao implements DoctorDao {
 
     public boolean addPatient(int doctorId, Patient patient) {
         try {
-            PreparedStatement statement = connection.prepareStatement("insert into PATIENTS " +
+            PreparedStatement statement = connection.prepareStatement("insert into DPATIENTS " +
                     "(docId, name, birthDate, surname) " +
                     "values (?, ?, ?, ?)");
             statement.setInt(1, doctorId);
@@ -74,7 +87,7 @@ public class JDBCDoctorDao implements DoctorDao {
     public Doctor getDoctorById(int id) {
         Doctor doctor = new Doctor();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM DOCTORS WHERE id=(?)");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM DDOCTORS WHERE id=(?)");
             ps.setInt(1, id);
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
@@ -95,7 +108,7 @@ public class JDBCDoctorDao implements DoctorDao {
     public Doctor getDoctorByNameSurname(String name, String surname) {
         Doctor doctor = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT d.id, d.specialization, d.name, d.surname FROM DOCTORS d WHERE (name=? AND surname=?)");
+            PreparedStatement ps = connection.prepareStatement("SELECT d.id, d.specialization, d.name, d.surname FROM DDOCTORS d WHERE (name=? AND surname=?)");
             ps.setString(1, name);
             ps.setString(2, surname);
             if (ps.execute()) {
@@ -123,7 +136,7 @@ public class JDBCDoctorDao implements DoctorDao {
                     " p.surname," +
                     " p.name," +
                     " p.birthDate " +
-                    " FROM PATIENTS p" +
+                    " FROM DPATIENTS p" +
                     " WHERE" +
                     " (p.docId = ?)");
             statement.setInt(1, id);
