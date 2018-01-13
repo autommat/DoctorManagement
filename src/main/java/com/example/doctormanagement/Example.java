@@ -6,6 +6,8 @@ import com.example.doctormanagement.daointerface.DoctorDao;
 import com.example.doctormanagement.daointerface.PatientDao;
 import com.example.doctormanagement.model.Doctor;
 import com.example.doctormanagement.model.Patient;
+import com.example.doctormanagement.model.Prescription;
+import com.example.doctormanagement.model.Treatment;
 
 import java.sql.*;
 
@@ -38,7 +40,7 @@ public class Example {
         Doctor doctorToAdd = new Doctor();
         doctorToAdd.setName("Anna");
         doctorToAdd.setSurname("Nowak");
-        doctorToAdd.setSpecialization("Kardiolog");
+        doctorToAdd.setSpecialization("Surgeon");
 
         doctorDao.addDoctor(doctorToAdd);
 
@@ -52,10 +54,33 @@ public class Example {
         patientToAdd.setSurname("Kowalski");
         patientToAdd.setBirthDate(new Date(new java.util.Date().getTime()));
         doctorDao.addPatient(doctorFromDB.getId(), patientToAdd);
+
         Patient patientFromDB = patientDao.getPatientById(1);
         System.out.println(patientFromDB);
         Patient patientFromDB2 = patientDao.getPatientByNameSurname("Jan", "Kowalski");
         System.out.println(patientFromDB2);
+
+        Prescription prescription = new Prescription();
+        prescription.setMedicine("Paracetamolum");
+        prescription.setDate(new Date(new java.util.Date().getTime()));
+        prescription.setDosageMg(15.5f);
+        prescription.setDosageADay(2);
+        patientDao.addPrescription(1, prescription);
+
+        Treatment treatment = new Treatment();
+        treatment.setStartDate(new Date(new java.util.Date().getTime()));
+        treatment.setEndDate(new Date(new java.util.Date().getTime()));
+        treatment.setTitle("X-ray");
+        treatment.setDescription("x-ray of left hand");
+        patientDao.addTreatment(1, treatment);
+
+        Patient patientFromDB3 = patientDao.getPatientByNameSurname("Jan", "Kowalski");
+        System.out.println(patientFromDB3);
+
+        System.out.println("Prescriptions");
+        patientFromDB3.getPrescriptions().forEach(System.out::println);
+        System.out.println("Treatments");
+        patientFromDB3.getTreatments().forEach(System.out::println);
     }
 
     private static void dropAndCreateDatabase() throws ClassNotFoundException, SQLException {
@@ -88,6 +113,7 @@ public class Example {
                 "        medicine varchar(255),\n" +
                 "        dosageMg real,\n" +
                 "        dosageADay integer,\n" +
+                "        prescriptionDate date,\n" +
                 "        primary key (id),\n" +
                 "        foreign key (patId) references DPATIENTS(id)\n" +
                 "    )");

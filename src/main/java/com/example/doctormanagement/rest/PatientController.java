@@ -39,7 +39,7 @@ public class PatientController {
         //example: http://localhost:8080/addTreatment
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/addTreatment")
+    @RequestMapping(method = RequestMethod.POST, value = "/addPrescription")
     public String addPrescription(@RequestParam(value = "id", defaultValue = "1") String patientId,
                                   @RequestBody Prescription prescription) {
         patientDao.addPrescription(Integer.parseInt(patientId), prescription);

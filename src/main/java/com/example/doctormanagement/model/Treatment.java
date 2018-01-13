@@ -39,4 +39,16 @@ public class Treatment extends MedicalHistory {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "Treatment{" +
+                "title='" + title + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", description='" + description + '\'' +
+                ", id=" + id +
+                ", patient=" + patientId +
+                '}';
+    }
 }

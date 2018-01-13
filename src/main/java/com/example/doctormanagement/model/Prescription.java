@@ -40,4 +40,15 @@ public class Prescription extends MedicalHistory {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "Prescription{" +
+                "dosageMg=" + dosageMg +
+                ", dosageADay=" + dosageADay +
+                ", medicine='" + medicine + '\'' +
+                ", date=" + date +
+                ", id=" + id +
+                ", patient=" + patientId +
+                '}';
+    }
 }
